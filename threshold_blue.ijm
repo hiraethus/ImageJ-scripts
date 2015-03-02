@@ -1,19 +1,28 @@
-resetResults();
+dir = getDirectory("Choose a Directory");
+countAllNucleiForDir(dir);
 
-File.openDialog("Pick an image...go on!");
-fileName = File.name;
-open(File.directory+fileName);
+function countAllNucleiForDir(dir) {
+	fileList = getFileList(dir)
+	for (i = 0; i < fileList.length; ++i) {
+		fileName = fileList[i];
+		countAllNuclei(fileName);
+		closeAllWindows();
+	}
+}
 
-colourDeconvolution(fileName);
+function countAllNuclei(fileName) {
+	open(File.directory+fileName);
 
-resetResults();
-result = countNuclei("H");
-print("Number of H nuclei in "+fileName+": "+result);
+	colourDeconvolution(fileName);
 
-resetResults();
-result = countNuclei("DAB");
-print("Number of DAB nuclei in "+fileName+": "+result);
+	resetResults();
+	result = countNuclei("H");
+	print("Number of H nuclei in "+fileName+": "+result);
 
+	resetResults();
+	result = countNuclei("DAB");
+	print("Number of DAB nuclei in "+fileName+": "+result);
+}
 
 function colourDeconvolution(windowName) {
 	selectWindow(windowName);
@@ -68,4 +77,11 @@ function countNuclei(channelName) {
 
 function resetResults() {
 	run("Clear Results");
+}
+
+function closeAllWindows() {
+	while (nImages>0) {
+	  selectImage(nImages);
+	  close();
+	}
 }
