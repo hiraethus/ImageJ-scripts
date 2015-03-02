@@ -3,7 +3,7 @@ fileName = File.name;
 open(File.directory+fileName);
 
 colourDeconvolution(fileName);
-countBlue("H");
+countNuclei("H");
 
 function colourDeconvolution(windowName) {
 	selectWindow(windowName);
@@ -20,17 +20,25 @@ function colourDeconvolution(windowName) {
 	rename("Other");
 }
 
-function countBlue(windowName) {
-	selectWindow(windowName);
-	rename("blue_channel");
+//channelName should be H or DAB in this case
+function countNuclei(channelName) {
+	selectWindow(channelName);
+	rename(channelName+"_channel");
 
-	run("Duplicate...", "title=blue_channel_blur");
-	selectWindow("blue_channel_blur");
+	run("Duplicate...", "title="+channelName+"_channel_blur");
+	selectWindow(channelName+"_channel_blur");
 	run("Gaussian Blur...", "sigma=10");
 
-	imageCalculator("Subtract create 32-bit", "blue_channel","blue_channel_blur");
-	selectWindow("Result of blue_channel");
-	rename("binary_nucleuses");
+	imageCalculator("Subtract create 32-bit", channelName+"_channel",channelName+"_channel_blur");
+
+	selectWindow(channelName+"_channel");
+	close();
+
+	selectWindow(channelName+"_channel_blur");
+	close();
+
+	selectWindow("Result of "+channelName+"_channel");
+	rename(channelName+"_binary_nucleuses");
 
 	// now apply maximum and minimum filter
 	run("Maximum...", "radius=3");
