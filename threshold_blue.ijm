@@ -1,9 +1,19 @@
+resetResults();
+
 File.openDialog("Pick an image...go on!");
 fileName = File.name;
 open(File.directory+fileName);
 
 colourDeconvolution(fileName);
-countNuclei("H");
+
+resetResults();
+result = countNuclei("H");
+print("Number of H nuclei in "+fileName+": "+result);
+
+resetResults();
+result = countNuclei("DAB");
+print("Number of DAB nuclei in "+fileName+": "+result);
+
 
 function colourDeconvolution(windowName) {
 	selectWindow(windowName);
@@ -51,5 +61,11 @@ function countNuclei(channelName) {
 	run("Invert");
 
 	run("Watershed");
-	run("Analyze Particles...", "add");
+	run("Analyze Particles...", " ");
+
+	return nResults;
+}
+
+function resetResults() {
+	run("Clear Results");
 }
