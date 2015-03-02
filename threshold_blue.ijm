@@ -30,4 +30,4 @@ run("Make Binary", "thresholded remaining black");
 run("Invert");
 
 run("Watershed");
-run("Analyze Particles...");
+run("Analyze Particles...", "add");
