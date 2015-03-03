@@ -5,14 +5,13 @@ function countAllNucleiForDir(dir) {
 	fileList = getFileList(dir)
 	for (i = 0; i < fileList.length; ++i) {
 		fileName = fileList[i];
-		countAllNuclei(fileName);
+		countAllNuclei(dir, fileName);
 		closeAllWindows();
 	}
 }
 
-function countAllNuclei(fileName) {
-	open(File.directory+fileName);
-
+function countAllNuclei(fileDirectory, fileName) {
+	open(fileDirectory+fileName);
 	colourDeconvolution(fileName);
 
 	resetResults();
