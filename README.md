@@ -9,3 +9,4 @@
 1. ~~Poss, difference of gaussian implementation~~
 1. Laplacian of Gaussian option
 1. Include way to do all permutations of the above and list all the results in a results table
+1. See if there's a way we can add a flattened image of our resulting ROI to the Results table.
