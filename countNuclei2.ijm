@@ -1,5 +1,8 @@
-closeAllWindows(); 
+if (!getBoolean("This script will remove all images from your session. Do you wish to continue?")) {
+	exit;
+}
 
+resetEnvironment();
 open(File.openDialog("Choose a picture to open"));
 
 Dialog.create("Nucleus Count Options");
@@ -31,10 +34,16 @@ maximumFilterRadius = Dialog.getNumber();
 minimumFilterRadius = Dialog.getNumber();
 isUsingWatershed = Dialog.getCheckbox();
 
-
-CountNuclei(nucleusColour, otherColour, lowerGaussianSigma,
+nucleusCount = CountNuclei(nucleusColour, otherColour, lowerGaussianSigma,
 	upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 	minimumFilterRadius, isUsingWatershed);
+
+run("Clear Results");
+
+writeResults(nucleusColour, otherColour,
+lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
+maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount);
+
 
 /**
  * @param thresholdType can be value ["yen", "triangle"] 
@@ -99,7 +108,24 @@ function CountNuclei (nucleusColour, otherColour,
 		run("Watershed");
 	}
 	
-	run("Analyze Particles...", "  show=[Overlay Outlines] summarize add");
+	run("Analyze Particles...", " ");
+
+	nucleusCount = nResults;
+
+	return nucleusCount;
+}
+
+function writeResults(nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount) {
+	numResults = nResults;
+	setResult("Nucleus Colour", numResults, nucleusColour);
+	setResult("Lower Gaussian Sigma", numResults, lowerGaussianSigma);
+	setResult("Upper Gaussian Sigma", numResults, upperGaussianSigma);
+	setResult("Will remove outliers", numResults, willRemoveOutliers);
+	setResult("Threshold Algorithm", numResults, thresholdType);
+	setResult("Maximum Filter radius", numResults, maximumFilterRadius);
+	setResult("Minimum Filter radius", numResults, minimumFilterRadius);
+	setResult("Used watershed?", numResults, isUsingWatershed);
+	setResult("Nucleus count", numResults, nucleusCount);
 }
 
 	
@@ -116,6 +142,11 @@ function colourDeconvolution(windowName) {
 	rename("DAB");
 	selectWindow(windowName+"-(Colour_3)");
 	rename("Other");
+}
+
+function resetEnvironment() {
+	closeAllWindows();
+	run("Clear Results");
 }
 
 function closeAllWindows() {
