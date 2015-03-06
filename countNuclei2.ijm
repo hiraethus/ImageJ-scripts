@@ -7,7 +7,7 @@ Dialog.create("Nucleus Count Options");
 Dialog.addChoice("Nucleus stain colour:", newArray("DAB", "H"));
 Dialog.addNumber("Lower gaussian blur sigma:", 2);
 Dialog.addNumber("Upper gaussian blur sigma:", 6);
-
+Dialog.addCheckbox("Remove outliers:", true);
 Dialog.addChoice("Threshold type:", newArray("yen", "triangle"));
 
 Dialog.addNumber("Maximum filter radius:", 4);
@@ -25,6 +25,7 @@ if (nucleusColour == "DAB") {
 }
 lowerGaussianSigma = Dialog.getNumber();
 upperGaussianSigma = Dialog.getNumber();
+willRemoveOutliers = Dialog.getCheckbox();
 thresholdType = Dialog.getChoice();
 maximumFilterRadius = Dialog.getNumber();
 minimumFilterRadius = Dialog.getNumber();
@@ -32,14 +33,14 @@ isUsingWatershed = Dialog.getCheckbox();
 
 
 CountNuclei(nucleusColour, otherColour, lowerGaussianSigma,
-	upperGaussianSigma, thresholdType, maximumFilterRadius,
+	upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 	minimumFilterRadius, isUsingWatershed);
 
 /**
  * @param thresholdType can be value ["yen", "triangle"] 
  */
 function CountNuclei (nucleusColour, otherColour,
-	lowerGaussianSigma, upperGaussianSigma, thresholdType,
+	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed) {
 	run("Duplicate...", "title=copy_of_original");
 	
@@ -65,7 +66,9 @@ function CountNuclei (nucleusColour, otherColour,
 	selectWindow (nucleusColour+"_sum_of_Gaussian");
 	
 	// maybe need to change this bit 
-	run("Remove Outliers...", "radius=4 threshold=10 which=Bright");
+	if (willRemoveOutliers) {
+		run("Remove Outliers...", "radius=4 threshold=10 which=Bright");
+	}
 	
 	selectWindow ("Other");
 	
