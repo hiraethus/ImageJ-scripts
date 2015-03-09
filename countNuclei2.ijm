@@ -155,3 +155,14 @@ function closeAllWindows() {
 	  close();
 	}
 }
+
+function closeAllWindowsExcept(windowName) {
+	for (i = 1; i < nImages; i++) {
+		selectImage(i);
+		imageTitle = getTitle();
+
+		if (imageTitle != windowName) {
+			close();
+		}
+	}
+}
