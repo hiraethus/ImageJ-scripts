@@ -3,6 +3,8 @@ if (!getBoolean("This script will remove all images from your session. Do you wi
 }
 
 resetEnvironment();
+
+//=== User Interface =======================================================================
 open(File.openDialog("Choose a picture to open"));
 
 Dialog.create("Nucleus Count Options");
@@ -34,21 +36,53 @@ maximumFilterRadius = Dialog.getNumber();
 minimumFilterRadius = Dialog.getNumber();
 isUsingWatershed = Dialog.getCheckbox();
 
-nucleusCount = CountNuclei(nucleusColour, otherColour, lowerGaussianSigma,
+//=== Implementation ======================================================================
+
+// Global variables
+var initArraySize = 20;
+var nucleusColours = newArray(initArraySize);
+var otherColours = newArray(initArraySize);
+var lowerGaussianSigmas = newArray(initArraySize);
+var upperGaussianSigmas = newArray(initArraySize);
+var willRemoveOutlierss = newArray(initArraySize);
+var thresholdTypes = newArray(initArraySize);
+var maximumFilterRadiuses = newArray(initArraySize);
+var minimumFilterRadiuses = newArray(initArraySize);
+var isUsingWatersheds = newArray(initArraySize);
+var nucleusCounts = newArray(initArraySize);
+
+nucleusCount = countNuclei(nucleusColour, otherColour, lowerGaussianSigma,
 	upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 	minimumFilterRadius, isUsingWatershed);
 
 run("Clear Results");
 
-writeResults(nucleusColour, otherColour,
-lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
-maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount);
+writeResultsToArray(nucleusColour, otherColour,
+	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
+	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, 0);
 
+// having looped through all the combinations, we now need to write all the results up in the results table
+writeResultsToResultsTable();
+
+
+function writeResultsToResultsTable() {
+	for (i = 0; i < nucleusColours.length; ++i) {
+		setResult("Nucleus Colour", i, nucleusColours[i]);
+		setResult("Lower Gaussian Sigma", i, lowerGaussianSigmas[i]);
+		setResult("Upper Gaussian Sigma", i, upperGaussianSigmas[i]);
+		setResult("Will remove outliers", i, willRemoveOutlierss[i]);
+		setResult("Threshold Algorithm", i, thresholdTypes[i]);
+		setResult("Maximum Filter radius", i, maximumFilterRadiuses[i]);
+		setResult("Minimum Filter radius", i, minimumFilterRadiuses[i]);
+		setResult("Used watershed?", i, isUsingWatersheds[i]);
+		setResult("Nucleus count", i, nucleusCounts[i]);
+	}
+}
 
 /**
  * @param thresholdType can be value ["yen", "triangle"] 
  */
-function CountNuclei (nucleusColour, otherColour,
+function countNuclei (nucleusColour, otherColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed) {
 	run("Duplicate...", "title=copy_of_original");
@@ -115,17 +149,17 @@ function CountNuclei (nucleusColour, otherColour,
 	return nucleusCount;
 }
 
-function writeResults(nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount) {
-	numResults = nResults;
-	setResult("Nucleus Colour", numResults, nucleusColour);
-	setResult("Lower Gaussian Sigma", numResults, lowerGaussianSigma);
-	setResult("Upper Gaussian Sigma", numResults, upperGaussianSigma);
-	setResult("Will remove outliers", numResults, willRemoveOutliers);
-	setResult("Threshold Algorithm", numResults, thresholdType);
-	setResult("Maximum Filter radius", numResults, maximumFilterRadius);
-	setResult("Minimum Filter radius", numResults, minimumFilterRadius);
-	setResult("Used watershed?", numResults, isUsingWatershed);
-	setResult("Nucleus count", numResults, nucleusCount);
+function writeResultsToArray(nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount,arrayIndex) {
+	nucleusColours[arrayIndex] = nucleusColour;
+	otherColours[arrayIndex] = otherColour;
+	lowerGaussianSigmas[arrayIndex] = lowerGaussianSigma;
+	upperGaussianSigmas[arrayIndex] = upperGaussianSigma;
+	willRemoveOutlierss[arrayIndex] = willRemoveOutliers;
+	thresholdTypes[arrayIndex] = thresholdType;
+	maximumFilterRadiuses[arrayIndex] = maximumFilterRadius;
+	minimumFilterRadiuses[arrayIndex] = minimumFilterRadius;
+	isUsingWatersheds[arrayIndex] = isUsingWatershed;
+	nucleusCounts[arrayIndex] = nucleusCount;
 }
 
 	
