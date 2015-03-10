@@ -1,13 +1,13 @@
 # Scripts for ImageJ coursework
 
 ## TODO for countNuclei2
-1. Split up different parts of countNuclei(channelName) function - it's too long!
-1. ~~Create dialog box with checkboxes to exclude different parts of process~~
+1. Iterate over each image and save all results to Results table
+1. Flatten Regions of interest onto original image
+1. Save flattened ROI images to file as TIFF
+1. Perhaps add parameter details to flattened images (e.g. H, DAB, gaussian sigma)
 1. Write results to table / csv file
-1. Split channels chroma option
+1. Include way to do all permutations of the above and list all the results in a results table
+1. ~~Create dialog box with checkboxes to exclude different parts of process~~
 1. Split channel DIY colour deconvolution option
 1. ~~Poss, difference of gaussian implementation~~
 1. Laplacian of Gaussian option
-1. Include way to do all permutations of the above and list all the results in a results table
-1. See if there's a way we can add a flattened image of our resulting ROI to the Results table.
-1. Seperate out into seperate scripts possibly?
