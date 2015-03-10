@@ -8,13 +8,13 @@ open(File.openDialog("Choose a picture to open"));
 Dialog.create("Nucleus Count Options");
 
 Dialog.addChoice("Nucleus stain colour:", newArray("DAB", "H", "BOTH"));
-Dialog.addNumber("Lower gaussian blur sigma:", 2);
-Dialog.addNumber("Upper gaussian blur sigma:", 6);
+Dialog.addSlider("Lower gaussian blur sigma", 0, 10, 2);
+Dialog.addSlider("Upper gaussian blur sigma", 0, 10, 6);
 Dialog.addCheckbox("Remove outliers:", true);
 Dialog.addChoice("Threshold type:", newArray("yen", "triangle"));
 
-Dialog.addNumber("Maximum filter radius:", 4);
-Dialog.addNumber("Minimum filter radius:", 4);
+Dialog.addSlider("Maximum filter radius:", 0, 10, 4);
+Dialog.addSlider("Minimum filter radius:", 0, 10, 4);
 
 Dialog.addCheckbox("Use Watershed", true);
 Dialog.show();
