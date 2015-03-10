@@ -39,7 +39,7 @@ isUsingWatershed = Dialog.getCheckbox();
 //=== Implementation ======================================================================
 
 // Global variables
-var initArraySize = 20;
+var initArraySize = 1;
 var nucleusColours = newArray(initArraySize);
 var otherColours = newArray(initArraySize);
 var lowerGaussianSigmas = newArray(initArraySize);
@@ -57,9 +57,7 @@ nucleusCount = countNuclei(nucleusColour, otherColour, lowerGaussianSigma,
 
 run("Clear Results");
 
-writeResultsToArray(nucleusColour, otherColour,
-	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
-	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, 0);
+
 
 // having looped through all the combinations, we now need to write all the results up in the results table
 writeResultsToResultsTable();
@@ -145,6 +143,10 @@ function countNuclei (nucleusColour, otherColour,
 	run("Analyze Particles...", " ");
 
 	nucleusCount = nResults;
+	writeResultsToArray(nucleusColour, otherColour,
+		lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
+		maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, 0);
+
 
 	return nucleusCount;
 }
