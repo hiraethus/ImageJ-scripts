@@ -33,6 +33,7 @@ isUsingWatershed = Dialog.getCheckbox();
 // Global variables
 
 var initArraySize = 10000;
+var filenames = newArray(initArraySize);
 var nucleusColours = newArray(initArraySize);
 var otherColours = newArray(initArraySize);
 var lowerGaussianSigmas = newArray(initArraySize);
@@ -60,7 +61,7 @@ for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; n
 
 
 	nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
-	countNuclei(nextNucleusColour, lowerGaussianSigma,
+	countNuclei(File.name, nextNucleusColour, lowerGaussianSigma,
 		upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 		minimumFilterRadius, isUsingWatershed, resultIndex);
 }
@@ -73,6 +74,7 @@ function writeResultsToResultsTable() {
 	run("Clear Results");
 
 	for (i = 0; i < numIterations; ++i) {
+		setResult("Image", i, filenames[i]);
 		setResult("Nucleus Colour", i, nucleusColours[i]);
 		setResult("Lower Gaussian Sigma", i, lowerGaussianSigmas[i]);
 		setResult("Upper Gaussian Sigma", i, upperGaussianSigmas[i]);
@@ -88,7 +90,7 @@ function writeResultsToResultsTable() {
 /**
  * @param thresholdType can be value ["yen", "triangle"] 
  */
-function countNuclei (nucleusColour,
+function countNuclei (filename, nucleusColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, resultIndex) {
 
@@ -160,7 +162,7 @@ function countNuclei (nucleusColour,
 	run("Analyze Particles...", " ");
 
 	nucleusCount = nResults;
-	writeResultsToArray(nucleusColour, otherColour,
+	writeResultsToArray(filename, nucleusColour, otherColour,
 		lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 		maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, resultIndex);
 
@@ -168,7 +170,8 @@ function countNuclei (nucleusColour,
 	return nucleusCount;
 }
 
-function writeResultsToArray(nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount,arrayIndex) {
+function writeResultsToArray(filename, nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount,arrayIndex) {
+	filenames[arrayIndex] = filename;
 	nucleusColours[arrayIndex] = nucleusColour;
 	otherColours[arrayIndex] = otherColour;
 	lowerGaussianSigmas[arrayIndex] = lowerGaussianSigma;
