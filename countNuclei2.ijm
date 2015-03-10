@@ -1,6 +1,4 @@
-if (!getBoolean("This script will remove all images from your session. Do you wish to continue?")) {
-	exit;
-}
+if (nImages > 0 && !getBoolean("This script will remove all images from your session. Do you wish to continue?")) exit;
 
 resetEnvironment();
 
@@ -59,6 +57,7 @@ if (nucleusColour == "BOTH") {
 
 for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; nucleusColourIndex++) {
 	resultIndex = nucleusColourIndex;
+
 
 	nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
 	countNuclei(nextNucleusColour, lowerGaussianSigma,
