@@ -9,7 +9,7 @@ open(File.openDialog("Choose a picture to open"));
 
 Dialog.create("Nucleus Count Options");
 
-Dialog.addChoice("Nucleus stain colour:", newArray("DAB", "H"));
+Dialog.addChoice("Nucleus stain colour:", newArray("DAB", "H", "BOTH"));
 Dialog.addNumber("Lower gaussian blur sigma:", 2);
 Dialog.addNumber("Upper gaussian blur sigma:", 6);
 Dialog.addCheckbox("Remove outliers:", true);
@@ -33,7 +33,8 @@ isUsingWatershed = Dialog.getCheckbox();
 //=== Implementation ======================================================================
 
 // Global variables
-var initArraySize = 1;
+
+var initArraySize = 10000;
 var nucleusColours = newArray(initArraySize);
 var otherColours = newArray(initArraySize);
 var lowerGaussianSigmas = newArray(initArraySize);
@@ -44,21 +45,35 @@ var maximumFilterRadiuses = newArray(initArraySize);
 var minimumFilterRadiuses = newArray(initArraySize);
 var isUsingWatersheds = newArray(initArraySize);
 var nucleusCounts = newArray(initArraySize);
-
-nucleusCount = countNuclei(nucleusColour, lowerGaussianSigma,
-	upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
-	minimumFilterRadius, isUsingWatershed);
-
-run("Clear Results");
+numIterations = calculateNumberIterations(nucleusColour); // calculate the number of times we're iterating over the countNuclei function
 
 
+if (nucleusColour == "BOTH") {
+	nucleusColoursToTest = newArray("H", "DAB");
+	
+} else if (nucleusColour == "H") {
+	nucleusColoursToTest = newArray("H");
+} else {
+	nucleusColoursToTest = newArray("DAB");
+}
+
+for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; nucleusColourIndex++) {
+	resultIndex = nucleusColourIndex;
+
+	nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
+	countNuclei(nextNucleusColour, lowerGaussianSigma,
+		upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
+		minimumFilterRadius, isUsingWatershed, resultIndex);
+}
 
 // having looped through all the combinations, we now need to write all the results up in the results table
 writeResultsToResultsTable();
 
 
 function writeResultsToResultsTable() {
-	for (i = 0; i < nucleusColours.length; ++i) {
+	run("Clear Results");
+
+	for (i = 0; i < numIterations; ++i) {
 		setResult("Nucleus Colour", i, nucleusColours[i]);
 		setResult("Lower Gaussian Sigma", i, lowerGaussianSigmas[i]);
 		setResult("Upper Gaussian Sigma", i, upperGaussianSigmas[i]);
@@ -76,7 +91,7 @@ function writeResultsToResultsTable() {
  */
 function countNuclei (nucleusColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
-	maximumFilterRadius, minimumFilterRadius, isUsingWatershed) {
+	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, resultIndex) {
 
 	otherColour = "";
 	if (nucleusColour == "DAB") {
@@ -148,7 +163,7 @@ function countNuclei (nucleusColour,
 	nucleusCount = nResults;
 	writeResultsToArray(nucleusColour, otherColour,
 		lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
-		maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, 0);
+		maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, resultIndex);
 
 
 	return nucleusCount;
@@ -181,6 +196,14 @@ function colourDeconvolution(windowName) {
 	rename("DAB");
 	selectWindow(windowName+"-(Colour_3)");
 	rename("Other");
+}
+
+function calculateNumberIterations(nucleusColour) {
+	if (nucleusColour == "BOTH") {
+		return 2;
+	} else {
+		return 1;
+	}
 }
 
 function resetEnvironment() {
