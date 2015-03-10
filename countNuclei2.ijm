@@ -22,12 +22,6 @@ Dialog.addCheckbox("Use Watershed", true);
 Dialog.show();
 
 nucleusColour = Dialog.getChoice();
-otherColour = "";
-if (nucleusColour == "DAB") {
-	otherColour = "H";
-} else {
-	otherColour = "DAB";
-}
 lowerGaussianSigma = Dialog.getNumber();
 upperGaussianSigma = Dialog.getNumber();
 willRemoveOutliers = Dialog.getCheckbox();
@@ -51,7 +45,7 @@ var minimumFilterRadiuses = newArray(initArraySize);
 var isUsingWatersheds = newArray(initArraySize);
 var nucleusCounts = newArray(initArraySize);
 
-nucleusCount = countNuclei(nucleusColour, otherColour, lowerGaussianSigma,
+nucleusCount = countNuclei(nucleusColour, lowerGaussianSigma,
 	upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 	minimumFilterRadius, isUsingWatershed);
 
@@ -80,9 +74,18 @@ function writeResultsToResultsTable() {
 /**
  * @param thresholdType can be value ["yen", "triangle"] 
  */
-function countNuclei (nucleusColour, otherColour,
+function countNuclei (nucleusColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed) {
+
+	otherColour = "";
+	if (nucleusColour == "DAB") {
+		otherColour = "H";
+	} else {
+		otherColour = "DAB";
+	}
+
+
 	run("Duplicate...", "title=copy_of_original");
 	
 	selectWindow ("copy_of_original");
