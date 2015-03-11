@@ -2,7 +2,7 @@
 
 ## TODO for countNuclei2
 1. Iterate over each image and save all results to Results table
-1. Flatten Regions of interest onto original image
+1. ~~Flatten Regions of interest onto original image~~
 1. Save flattened ROI images to file as TIFF
 1. Perhaps add parameter details to flattened images (e.g. H, DAB, gaussian sigma)
 1. Write results to table / csv file
