@@ -65,10 +65,11 @@ for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; n
 		upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 		minimumFilterRadius, isUsingWatershed, resultIndex);
 }
-
 // having looped through all the combinations, we now need to write all the results up in the results table
 writeResultsToResultsTable();
+
 closeAllWindowsExceptFlattenedROI();
+run("Tile");
 
 
 
