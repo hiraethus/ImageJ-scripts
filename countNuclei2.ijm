@@ -68,6 +68,9 @@ for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; n
 
 // having looped through all the combinations, we now need to write all the results up in the results table
 writeResultsToResultsTable();
+closeAllWindowsExceptFlattenedROI();
+
+
 
 
 function writeResultsToResultsTable() {
@@ -263,4 +266,25 @@ function closeAllWindowsExcept(windowName) {
 			close();
 		}
 	}
+}
+
+function closeAllWindowsExceptFlattenedROI() {
+	imageIDs = getImageIDs();
+	for (i = 0; i < imageIDs.length; ++i) {
+		selectImage(imageIDs[i]);
+		imageTitle = getTitle();
+		if (!startsWith(imageTitle, "ROI")) {
+			close();
+		}
+	}
+}
+
+function getImageIDs() {
+	imageIDs = newArray(nImages);
+	for (i = nImages; i > 0; i--) {
+		selectImage(i);
+		imageIDs[i - 1] = getImageID();
+	}
+
+	return imageIDs;
 }
