@@ -180,6 +180,7 @@ function combineRegionsOfInterestAndApplyToFile(outputFilename) {
 	roiManager("Set Color", "green");
 
 	selectWindow(filename);
+	run("Duplicate...", "title="+filename+"_duplicate");
 
 	roiManager("Select", 0);
 	run("Add Selection...");
@@ -187,6 +188,9 @@ function combineRegionsOfInterestAndApplyToFile(outputFilename) {
 
 	// will have opened a new window. Let's change its name
 	rename(outputFilename);
+
+	selectWindow(filename+"_duplicate");
+	close();
 
 	print("Saving "+outputFilename+"...");
 }
