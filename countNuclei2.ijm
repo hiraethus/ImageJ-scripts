@@ -162,11 +162,7 @@ function countNuclei (filename, nucleusColour,
 	run("Analyze Particles...", "add");
 	nucleusCount = roiManager("count");
 
-	roiManager("Deselect");
-	roiManager("Combine");
-	roiManager("Delete");
-	roiManager("Add");
-	roiManager("Set Color", "green");
+	combineRegionsOfInterestAndApplyToFile("ROI_"+nucleusColour+"_"+filename);
 
 	nucleusCount = nResults;
 	writeResultsToArray(filename, nucleusColour, otherColour,
@@ -176,6 +172,26 @@ function countNuclei (filename, nucleusColour,
 
 	return nucleusCount;
 }
+
+function combineRegionsOfInterestAndApplyToFile(outputFilename) {
+	roiManager("Deselect");
+	roiManager("Combine");
+	roiManager("Delete");
+	roiManager("Add");
+	roiManager("Set Color", "green");
+
+	selectWindow(filename);
+
+	roiManager("Select", 0);
+	run("Add Selection...");
+	run("Flatten");
+
+	// will have opened a new window. Let's change its name
+	rename(outputFilename);
+
+	print("Saving "+outputFilename+"...");
+}
+
 
 function writeResultsToArray(filename, nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount,arrayIndex) {
 	filenames[arrayIndex] = filename;
