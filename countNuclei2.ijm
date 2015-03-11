@@ -194,7 +194,7 @@ function writeResultsToArray(filename, nucleusColour, otherColour, lowerGaussian
 function clearRoiManager() {
 	//delete them all!
 	if (roiManager("count") > 0) {
-		roiManager("Select", roiManager("count") - 1);
+		roiManager("Deselect");
 		roiManager("Delete");
 	}
 }
