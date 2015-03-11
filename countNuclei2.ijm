@@ -157,7 +157,16 @@ function countNuclei (filename, nucleusColour,
 	}
 
 	run("Clear Results");
-	run("Analyze Particles...", " ");
+	clearRoiManager();
+
+	run("Analyze Particles...", "add");
+	nucleusCount = roiManager("count");
+
+	roiManager("Deselect");
+	roiManager("Combine");
+	roiManager("Delete");
+	roiManager("Add");
+	roiManager("Set Color", "green");
 
 	nucleusCount = nResults;
 	writeResultsToArray(filename, nucleusColour, otherColour,
@@ -182,6 +191,13 @@ function writeResultsToArray(filename, nucleusColour, otherColour, lowerGaussian
 	nucleusCounts[arrayIndex] = nucleusCount;
 }
 
+function clearRoiManager() {
+	//delete them all!
+	if (roiManager("count") > 0) {
+		roiManager("Select", roiManager("count") - 1);
+		roiManager("Delete");
+	}
+}
 	
 function colourDeconvolution(windowName) {
 	selectWindow(windowName);
@@ -208,6 +224,7 @@ function calculateNumberIterations(nucleusColour) {
 
 function resetEnvironment() {
 	closeAllWindows();
+	clearRoiManager();
 	run("Clear Results");
 }
 
