@@ -5,7 +5,8 @@ if (nImages > 0) {
 resetEnvironment();
 
 //=== User Interface =======================================================================
-open(File.openDialog("Choose a picture to open"));
+dir = getDirectory("Choose a Directory");
+fileList = getFileList(dir);
 
 Dialog.create("Nucleus Count Options");
 
@@ -46,7 +47,7 @@ var maximumFilterRadiuses = newArray(initArraySize);
 var minimumFilterRadiuses = newArray(initArraySize);
 var isUsingWatersheds = newArray(initArraySize);
 var nucleusCounts = newArray(initArraySize);
-numIterations = calculateNumberIterations(nucleusColour); // calculate the number of times we're iterating over the countNuclei function
+numIterations = calculateNumberIterations(nucleusColour, fileList.length); // calculate the number of times we're iterating over the countNuclei function
 
 
 if (nucleusColour == "BOTH") {
@@ -58,23 +59,29 @@ if (nucleusColour == "BOTH") {
 	nucleusColoursToTest = newArray("DAB");
 }
 
-for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; nucleusColourIndex++) {
-	resultIndex = nucleusColourIndex;
+count = 0;
+for (fileIndex = 0; fileIndex < fileList.length; ++fileIndex) {
 
+	for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; nucleusColourIndex++) {
+		//resultIndex = nucleusColourIndex;
+		open(dir+fileList[fileIndex]);
 
-	nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
-	countNuclei(File.name, nextNucleusColour, lowerGaussianSigma,
-		upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
-		minimumFilterRadius, isUsingWatershed, resultIndex);
+		nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
+		countNuclei(File.name, nextNucleusColour, lowerGaussianSigma,
+			upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
+			minimumFilterRadius, isUsingWatershed, count);
+
+			clearRoiManager();
+			Overlay.remove ();
+			count++;
+
+		closeAllWindowsExceptFlattenedROI();
+
+	}
 }
 // having looped through all the combinations, we now need to write all the results up in the results table
 writeResultsToResultsTable();
-
-closeAllWindowsExceptFlattenedROI();
 run("Tile");
-
-
-
 
 function writeResultsToResultsTable() {
 	run("Clear Results");
@@ -99,6 +106,10 @@ function writeResultsToResultsTable() {
 function countNuclei (filename, nucleusColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, resultIndex) {
+
+	print("countNuclei("+filename+", "+nucleusColour+", "+lowerGaussianSigma
+		+ ", "+upperGaussianSigma+", "+willRemoveOutliers+", "+thresholdType+", "+maximumFilterRadius
+		+ ", "+minimumFilterRadius+", "+isUsingWatershed+", "+resultIndex+")");
 
 	otherColour = "";
 	if (nucleusColour == "DAB") {
@@ -194,8 +205,6 @@ function combineRegionsOfInterestAndApplyToFile(outputFilename) {
 
 	selectWindow(filename+"_duplicate");
 	close();
-
-	print("Saving "+outputFilename+"...");
 }
 
 
@@ -236,12 +245,15 @@ function colourDeconvolution(windowName) {
 	rename("Other");
 }
 
-function calculateNumberIterations(nucleusColour) {
+function calculateNumberIterations(nucleusColour, numImages) {
+	iters = 0;
 	if (nucleusColour == "BOTH") {
-		return 2;
+		iters += 2;
 	} else {
-		return 1;
+		iters += 1;
 	}
+
+	return iters * numImages;
 }
 
 function resetEnvironment() {
