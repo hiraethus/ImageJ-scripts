@@ -100,12 +100,9 @@ function countNuclei (filename, nucleusColour,
 	} else {
 		otherColour = "DAB";
 	}
-
-
-	run("Duplicate...", "title=copy_of_original");
 	
-	selectWindow ("copy_of_original");
-	colourDeconvolution ("copy_of_original");
+	selectWindow (filename);
+	colourDeconvolution (filename);
 	
 	selectWindow (nucleusColour);
 	run("Duplicate...", "title="+nucleusColour+"_Duplicate");
