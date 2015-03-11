@@ -12,6 +12,13 @@ fileList = getFileList(dir);
 
 Dialog.create("Nucleus Count Options");
 
+Dialog.addMessage("Images to examine:");
+
+for (i = 0; i < fileList.length; ++i) {
+	Dialog.addCheckbox(fileList[i], true);
+}
+Dialog.addMessage("---");
+
 Dialog.addChoice("Nucleus stain colour:", newArray("BOTH", "DAB", "H"));
 Dialog.addSlider("Lower gaussian blur sigma", 0, 10, 2);
 Dialog.addSlider("Upper gaussian blur sigma", 0, 10, 6);
@@ -23,6 +30,21 @@ Dialog.addSlider("Minimum filter radius:", 0, 10, 4);
 
 Dialog.addCheckbox("Use Watershed", true);
 Dialog.show();
+
+// build the list of files we want to include
+selectedFileNames = "";
+for (i = 0; i < fileList.length; ++i) {
+	isIthSelected = Dialog.getCheckbox();
+	if (isIthSelected) {
+		selectedFileNames += fileList[i] +";";
+	}
+}
+if(endsWith(selectedFileNames, ";")) {
+	lastIndex = lengthOf(selectedFileNames) - 1;
+	selectedFileNames = substring(selectedFileNames, 0, lastIndex);
+}
+
+fileList = split(selectedFileNames, ";");
 
 nucleusColour = Dialog.getChoice();
 lowerGaussianSigma = Dialog.getNumber();
