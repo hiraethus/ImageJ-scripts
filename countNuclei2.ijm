@@ -1,3 +1,5 @@
+DEBUG = false;
+
 if (nImages > 0) {
 	if (!getBoolean("This script will remove all images from your session. Do you wish to continue?")) exit;
 }
@@ -10,7 +12,7 @@ fileList = getFileList(dir);
 
 Dialog.create("Nucleus Count Options");
 
-Dialog.addChoice("Nucleus stain colour:", newArray("DAB", "H", "BOTH"));
+Dialog.addChoice("Nucleus stain colour:", newArray("BOTH", "DAB", "H"));
 Dialog.addSlider("Lower gaussian blur sigma", 0, 10, 2);
 Dialog.addSlider("Upper gaussian blur sigma", 0, 10, 6);
 Dialog.addCheckbox("Remove outliers:", true);
@@ -107,7 +109,7 @@ function countNuclei (filename, nucleusColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, resultIndex) {
 
-	print("countNuclei("+filename+", "+nucleusColour+", "+lowerGaussianSigma
+	debug("countNuclei("+filename+", "+nucleusColour+", "+lowerGaussianSigma
 		+ ", "+upperGaussianSigma+", "+willRemoveOutliers+", "+thresholdType+", "+maximumFilterRadius
 		+ ", "+minimumFilterRadius+", "+isUsingWatershed+", "+resultIndex+")");
 
@@ -309,5 +311,11 @@ function mergeAllROIs() {
 		roiManager("Combine");
 		roiManager("Add");
 		roiManager("Delete");
+	}
+}
+
+function debug(string) {
+	if (DEBUG == true) {
+		print(string);
 	}
 }
