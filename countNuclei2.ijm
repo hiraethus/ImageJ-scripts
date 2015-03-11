@@ -177,10 +177,7 @@ function countNuclei (filename, nucleusColour,
 }
 
 function combineRegionsOfInterestAndApplyToFile(outputFilename) {
-	roiManager("Deselect");
-	roiManager("Combine");
-	roiManager("Delete");
-	roiManager("Add");
+	mergeAllROIs();
 	roiManager("Set Color", "green");
 
 	selectWindow(filename);
@@ -288,4 +285,15 @@ function getImageIDs() {
 	}
 
 	return imageIDs;
+}
+
+// novel way to merge all ROIs so that ImageJ doesn't crash
+function mergeAllROIs() {
+	indexes = newArray(0, 1);
+	while (roiManager("count") > 1) {
+		roiManager("select", indexes);
+		roiManager("Combine");
+		roiManager("Add");
+		roiManager("Delete");
+	}
 }
