@@ -155,7 +155,8 @@ function countNuclei (filename, nucleusColour,
 	if (isUsingWatershed) {
 		run("Watershed");
 	}
-	
+
+	run("Clear Results");
 	run("Analyze Particles...", " ");
 
 	nucleusCount = nResults;
