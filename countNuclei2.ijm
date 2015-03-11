@@ -164,7 +164,6 @@ function countNuclei (filename, nucleusColour,
 
 	combineRegionsOfInterestAndApplyToFile("ROI_"+nucleusColour+"_"+filename);
 
-	nucleusCount = nResults;
 	writeResultsToArray(filename, nucleusColour, otherColour,
 		lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 		maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, resultIndex);
