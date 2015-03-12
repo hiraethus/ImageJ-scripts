@@ -29,6 +29,8 @@ Dialog.addSlider("Maximum filter radius:", 0, 10, 4);
 Dialog.addSlider("Minimum filter radius:", 0, 10, 4);
 
 Dialog.addCheckbox("Use Watershed", true);
+Dialog.addMessage("---");
+Dialog.addCheckbox("Save output images?", false);
 Dialog.show();
 
 // build the list of files we want to include
@@ -54,6 +56,12 @@ thresholdType = Dialog.getChoice();
 maximumFilterRadius = Dialog.getNumber();
 minimumFilterRadius = Dialog.getNumber();
 isUsingWatershed = Dialog.getCheckbox();
+
+isSaveOutputImages = Dialog.getCheckbox();
+outputDir = "/";
+if (isSaveOutputImages) {
+	outputDir = getDirectory("Choose a Directory");
+}
 
 //=== Implementation ======================================================================
 
@@ -226,6 +234,9 @@ function combineRegionsOfInterestAndApplyToFile(outputFilename) {
 
 	// will have opened a new window. Let's change its name
 	rename(outputFilename);
+	if (isSaveOutputImages) {
+		saveAs("png", outputDir+outputFilename);
+	}
 
 	selectWindow(filename+"_duplicate");
 	close();
