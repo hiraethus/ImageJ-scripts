@@ -1,4 +1,5 @@
 DEBUG = false;
+BATCH_MODE = true;
 
 if (nImages > 0) {
 	if (!getBoolean("This script will remove all images from your session. Do you wish to continue?")) exit;
@@ -91,11 +92,12 @@ if (nucleusColour == "BOTH") {
 	nucleusColoursToTest = newArray("DAB");
 }
 
+if (BATCH_MODE) setBatchMode(true);
 count = 0;
 for (fileIndex = 0; fileIndex < fileList.length; ++fileIndex) {
 
 	for (nucleusColourIndex = 0; nucleusColourIndex < nucleusColoursToTest.length; nucleusColourIndex++) {
-		//resultIndex = nucleusColourIndex;
+
 		open(dir+fileList[fileIndex]);
 
 		nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
@@ -111,6 +113,7 @@ for (fileIndex = 0; fileIndex < fileList.length; ++fileIndex) {
 
 	}
 }
+if (BATCH_MODE) setBatchMode("exit and display");
 // having looped through all the combinations, we now need to write all the results up in the results table
 writeResultsToResultsTable();
 run("Tile");
@@ -138,6 +141,7 @@ function writeResultsToResultsTable() {
 function countNuclei (filename, nucleusColour,
 	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, resultIndex) {
+	numberOfSteps = 14;
 
 	debug("countNuclei("+filename+", "+nucleusColour+", "+lowerGaussianSigma
 		+ ", "+upperGaussianSigma+", "+willRemoveOutliers+", "+thresholdType+", "+maximumFilterRadius
@@ -149,6 +153,7 @@ function countNuclei (filename, nucleusColour,
 	} else {
 		otherColour = "DAB";
 	}
+	updateProgressBar(resultIndex, numIterations, 1/numberOfSteps);
 	
 	selectWindow (filename);
 	colourDeconvolution (filename);
@@ -159,13 +164,16 @@ function countNuclei (filename, nucleusColour,
 	selectWindow (nucleusColour);
 	run("Gaussian Blur...", "sigma="+lowerGaussianSigma);
 	rename(nucleusColour + "_Gaussian_lower");
+	updateProgressBar(resultIndex, numIterations, 2/numberOfSteps);
 	
 	selectWindow (nucleusColour+"_Duplicate");
 	run("Gaussian Blur...", "sigma="+upperGaussianSigma);
 	rename(nucleusColour+"_Gaussian_upper");
+	updateProgressBar(resultIndex, numIterations, 3/numberOfSteps);
 	
 	imageCalculator("Add create 32-bit", nucleusColour+"_Gaussian_lower", nucleusColour+"_Gaussian_upper");
-	
+	updateProgressBar(resultIndex, numIterations, 4/numberOfSteps);
+
 	selectWindow ("Result of "+nucleusColour+"_Gaussian_lower");
 	rename(nucleusColour+"_sum_of_Gaussian");
 	
@@ -175,21 +183,27 @@ function countNuclei (filename, nucleusColour,
 	if (willRemoveOutliers) {
 		run("Remove Outliers...", "radius=4 threshold=10 which=Bright");
 	}
+	updateProgressBar(resultIndex, numIterations, 5/numberOfSteps);
 	
 	selectWindow ("Other");
 	
 	imageCalculator("Add create 32-bit", nucleusColour+"_sum_of_Gaussian", "Other"); 
 	selectWindow ("Result of "+nucleusColour+"_sum_of_Gaussian");
 	rename(nucleusColour+"_sum_of_Gaussian_AND_other");
+	updateProgressBar(resultIndex, numIterations, 6/numberOfSteps);
 	
 	imageCalculator("Subtract create 32-bit", nucleusColour+"_sum_of_Gaussian_AND_other", otherColour); 
 	selectWindow ("Result of "+nucleusColour+"_sum_of_Gaussian_AND_other");
 	rename (nucleusColour+"_sum_of_Gaussian_AND_other_Minus_"+otherColour);
+	updateProgressBar(resultIndex, numIterations, 7/numberOfSteps);
 	
 	selectWindow (nucleusColour+"_sum_of_Gaussian_AND_other_Minus_"+otherColour);
 	// look at this bit - might need changed 
 	run("Maximum...", "radius="+maximumFilterRadius);
+	updateProgressBar(resultIndex, numIterations, 8/numberOfSteps);
+
 	run("Minimum...", "radius="+minimumFilterRadius);
+	updateProgressBar(resultIndex, numIterations, 9/numberOfSteps);
 
 	if (thresholdType == "yen") {
 		setAutoThreshold("Yen dark");
@@ -197,6 +211,7 @@ function countNuclei (filename, nucleusColour,
 		run("8-bit");
 		run("Triangle Algorithm");
 	}
+	updateProgressBar(resultIndex, numIterations, 10/numberOfSteps);
 	//run("Threshold...");
 	
 	run("Make Binary", "thresholded remaining black");
@@ -204,14 +219,18 @@ function countNuclei (filename, nucleusColour,
 	if (isUsingWatershed) {
 		run("Watershed");
 	}
+	updateProgressBar(resultIndex, numIterations, 11/numberOfSteps);
 
 	run("Clear Results");
 	clearRoiManager();
+	updateProgressBar(resultIndex, numIterations, 12/numberOfSteps);
 
 	run("Analyze Particles...", "add");
 	nucleusCount = roiManager("count");
+	updateProgressBar(resultIndex, numIterations, 13/numberOfSteps);
 
 	combineRegionsOfInterestAndApplyToFile("ROI_"+nucleusColour+"_"+filename);
+	updateProgressBar(resultIndex, numIterations, 14/numberOfSteps);
 
 	writeResultsToArray(filename, nucleusColour, otherColour,
 		lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
@@ -219,6 +238,10 @@ function countNuclei (filename, nucleusColour,
 
 
 	return nucleusCount;
+}
+
+function updateProgressBar(fullImagesComplete, totalImages, countNucleiFraction) {
+	showProgress((fullImagesComplete/totalImages) + (countNucleiFraction*1/numIterations));
 }
 
 function combineRegionsOfInterestAndApplyToFile(outputFilename) {
