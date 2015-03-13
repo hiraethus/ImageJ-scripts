@@ -1,6 +1,8 @@
 # Scripts for ImageJ coursework
 
 ## TODO for countNuclei2
+1. Fix problem of removing brown from blue and vice versa
+	- solution - calculate binaries for both channels and subtract one from the other
 1. IMPORTANT Calculate ratios of brown and blue spots and print to Log
 1. ~~IMPORTANT Save images as PNG to file~~
 1. ~Iterate over each image and save all results to Results table~
