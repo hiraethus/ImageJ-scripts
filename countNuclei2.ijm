@@ -1,5 +1,5 @@
 DEBUG = false;
-BATCH_MODE = true;
+BATCH_MODE = false;
 
 if (nImages > 0) {
 	if (!getBoolean("This script will remove all images from your session. Do you wish to continue?")) exit;
@@ -165,30 +165,20 @@ function countNuclei (filename, nucleusColour,
 	imageCalculator("Subtract create 32-bit", nucleusColour, nucleusColour+"_Gaussian_upper");
 	updateProgressBar(resultIndex, numIterations, 4/numberOfSteps);
 
-	selectWindow (nucleusColour);
+	selectWindow ("Result of "+nucleusColour);
 	rename(nucleusColour+"_sum_of_Gaussian");
 	
 	selectWindow (nucleusColour+"_sum_of_Gaussian");
 	
 	// maybe need to change this bit 
 	if (willRemoveOutliers) {
-		run("Remove Outliers...", "radius=4 threshold=10 which=Bright");
+		run("Remove Outliers...", "radius=4 threshold=50 which=Dark");
 	}
+
 	updateProgressBar(resultIndex, numIterations, 5/numberOfSteps);
-	
-	selectWindow ("Other");
-	
-	imageCalculator("Add create 32-bit", nucleusColour+"_sum_of_Gaussian", "Other"); 
-	selectWindow ("Result of "+nucleusColour+"_sum_of_Gaussian");
-	rename(nucleusColour+"_sum_of_Gaussian_AND_other");
-	updateProgressBar(resultIndex, numIterations, 6/numberOfSteps);
-	
-	imageCalculator("Subtract create 32-bit", nucleusColour+"_sum_of_Gaussian_AND_other", otherColour); 
-	selectWindow ("Result of "+nucleusColour+"_sum_of_Gaussian_AND_other");
-	rename (nucleusColour+"_sum_of_Gaussian_AND_other_Minus_"+otherColour);
 	updateProgressBar(resultIndex, numIterations, 7/numberOfSteps);
 	
-	selectWindow (nucleusColour+"_sum_of_Gaussian_AND_other_Minus_"+otherColour);
+	//selectWindow (nucleusColour+"_sum_of_Gaussian_AND_other_Minus_"+otherColour);
 	// look at this bit - might need changed 
 	run("Maximum...", "radius="+maximumFilterRadius);
 	updateProgressBar(resultIndex, numIterations, 8/numberOfSteps);
