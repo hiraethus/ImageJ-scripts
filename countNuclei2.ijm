@@ -21,8 +21,7 @@ for (i = 0; i < fileList.length; ++i) {
 Dialog.addMessage("---");
 
 Dialog.addChoice("Nucleus stain colour:", newArray("BOTH", "DAB", "H"));
-Dialog.addSlider("Lower gaussian blur sigma", 0, 30, 5);
-Dialog.addSlider("Upper gaussian blur sigma", 0, 30, 10);
+Dialog.addSlider("Gaussian blur sigma", 0, 30, 10);
 Dialog.addCheckbox("Remove outliers:", true);
 Dialog.addChoice("Threshold type:", newArray("yen", "triangle"));
 
@@ -50,7 +49,6 @@ if(endsWith(selectedFileNames, ";")) {
 fileList = split(selectedFileNames, ";");
 
 nucleusColour = Dialog.getChoice();
-lowerGaussianSigma = Dialog.getNumber();
 upperGaussianSigma = Dialog.getNumber();
 willRemoveOutliers = Dialog.getCheckbox();
 thresholdType = Dialog.getChoice();
@@ -72,7 +70,6 @@ var initArraySize = 10000;
 var filenames = newArray(initArraySize);
 var nucleusColours = newArray(initArraySize);
 var otherColours = newArray(initArraySize);
-var lowerGaussianSigmas = newArray(initArraySize);
 var upperGaussianSigmas = newArray(initArraySize);
 var willRemoveOutlierss = newArray(initArraySize);
 var thresholdTypes = newArray(initArraySize);
@@ -101,7 +98,7 @@ for (fileIndex = 0; fileIndex < fileList.length; ++fileIndex) {
 		open(dir+fileList[fileIndex]);
 
 		nextNucleusColour = nucleusColoursToTest[nucleusColourIndex];
-		countNuclei(File.name, nextNucleusColour, lowerGaussianSigma,
+		countNuclei(File.name, nextNucleusColour,
 			upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius,
 			minimumFilterRadius, isUsingWatershed, count);
 
@@ -124,8 +121,7 @@ function writeResultsToResultsTable() {
 	for (i = 0; i < numIterations; ++i) {
 		setResult("Image", i, filenames[i]);
 		setResult("Nucleus Colour", i, nucleusColours[i]);
-		setResult("Lower Gaussian Sigma", i, lowerGaussianSigmas[i]);
-		setResult("Upper Gaussian Sigma", i, upperGaussianSigmas[i]);
+		setResult("Gaussian Sigma", i, upperGaussianSigmas[i]);
 		setResult("Will remove outliers", i, willRemoveOutlierss[i]);
 		setResult("Threshold Algorithm", i, thresholdTypes[i]);
 		setResult("Maximum Filter radius", i, maximumFilterRadiuses[i]);
@@ -139,11 +135,11 @@ function writeResultsToResultsTable() {
  * @param thresholdType can be value ["yen", "triangle"] 
  */
 function countNuclei (filename, nucleusColour,
-	lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
+	upperGaussianSigma, willRemoveOutliers, thresholdType,
 	maximumFilterRadius, minimumFilterRadius, isUsingWatershed, resultIndex) {
 	numberOfSteps = 14;
 
-	debug("countNuclei("+filename+", "+nucleusColour+", "+lowerGaussianSigma
+	debug("countNuclei("+filename+", "+nucleusColour
 		+ ", "+upperGaussianSigma+", "+willRemoveOutliers+", "+thresholdType+", "+maximumFilterRadius
 		+ ", "+minimumFilterRadius+", "+isUsingWatershed+", "+resultIndex+")");
 
@@ -228,7 +224,7 @@ function countNuclei (filename, nucleusColour,
 	updateProgressBar(resultIndex, numIterations, 14/numberOfSteps);
 
 	writeResultsToArray(filename, nucleusColour, otherColour,
-		lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType,
+		upperGaussianSigma, willRemoveOutliers, thresholdType,
 		maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount, resultIndex);
 
 
@@ -261,11 +257,10 @@ function combineRegionsOfInterestAndApplyToFile(outputFilename) {
 }
 
 
-function writeResultsToArray(filename, nucleusColour, otherColour, lowerGaussianSigma, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount,arrayIndex) {
+function writeResultsToArray(filename, nucleusColour, otherColour, upperGaussianSigma, willRemoveOutliers, thresholdType, maximumFilterRadius, minimumFilterRadius, isUsingWatershed, nucleusCount,arrayIndex) {
 	filenames[arrayIndex] = filename;
 	nucleusColours[arrayIndex] = nucleusColour;
 	otherColours[arrayIndex] = otherColour;
-	lowerGaussianSigmas[arrayIndex] = lowerGaussianSigma;
 	upperGaussianSigmas[arrayIndex] = upperGaussianSigma;
 	willRemoveOutlierss[arrayIndex] = willRemoveOutliers;
 	thresholdTypes[arrayIndex] = thresholdType;
