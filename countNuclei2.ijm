@@ -21,8 +21,8 @@ for (i = 0; i < fileList.length; ++i) {
 Dialog.addMessage("---");
 
 Dialog.addChoice("Nucleus stain colour:", newArray("BOTH", "DAB", "H"));
-Dialog.addSlider("Lower gaussian blur sigma", 0, 10, 2);
-Dialog.addSlider("Upper gaussian blur sigma", 0, 10, 6);
+Dialog.addSlider("Lower gaussian blur sigma", 0, 30, 5);
+Dialog.addSlider("Upper gaussian blur sigma", 0, 30, 10);
 Dialog.addCheckbox("Remove outliers:", true);
 Dialog.addChoice("Threshold type:", newArray("yen", "triangle"));
 
@@ -161,20 +161,15 @@ function countNuclei (filename, nucleusColour,
 	selectWindow (nucleusColour);
 	run("Duplicate...", "title="+nucleusColour+"_Duplicate");
 	
-	selectWindow (nucleusColour);
-	run("Gaussian Blur...", "sigma="+lowerGaussianSigma);
-	rename(nucleusColour + "_Gaussian_lower");
-	updateProgressBar(resultIndex, numIterations, 2/numberOfSteps);
-	
 	selectWindow (nucleusColour+"_Duplicate");
 	run("Gaussian Blur...", "sigma="+upperGaussianSigma);
 	rename(nucleusColour+"_Gaussian_upper");
 	updateProgressBar(resultIndex, numIterations, 3/numberOfSteps);
 	
-	imageCalculator("Add create 32-bit", nucleusColour+"_Gaussian_lower", nucleusColour+"_Gaussian_upper");
+	imageCalculator("Subtract create 32-bit", nucleusColour, nucleusColour+"_Gaussian_upper");
 	updateProgressBar(resultIndex, numIterations, 4/numberOfSteps);
 
-	selectWindow ("Result of "+nucleusColour+"_Gaussian_lower");
+	selectWindow (nucleusColour);
 	rename(nucleusColour+"_sum_of_Gaussian");
 	
 	selectWindow (nucleusColour+"_sum_of_Gaussian");
