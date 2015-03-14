@@ -196,10 +196,65 @@ function countNuclei (filename, nucleusColour,
 	//run("Threshold...");
 	
 	run("Make Binary", "thresholded remaining black");
+
 	run("Invert");
+	run("Divide...", "value=255.000");
+//// Now for other colour //////////////////////////////////////////
+	selectWindow (otherColour);
+	run("Duplicate...", "title="+otherColour+"_Duplicate");
+
+	selectWindow (otherColour+"_Duplicate");
+	run("Gaussian Blur...", "sigma="+upperGaussianSigma);
+	rename(otherColour+"_Gaussian_upper");
+	updateProgressBar(resultIndex, numIterations, 3/numberOfSteps);
+
+	imageCalculator("Subtract create 32-bit", otherColour, otherColour+"_Gaussian_upper");
+	updateProgressBar(resultIndex, numIterations, 4/numberOfSteps);
+
+	selectWindow ("Result of "+otherColour);
+	rename(otherColour+"_sum_of_Gaussian");
+
+	selectWindow (otherColour+"_sum_of_Gaussian");
+
+	// maybe need to change this bit
+	if (willRemoveOutliers) {
+		run("Remove Outliers...", "radius=4 threshold=50 which=Dark");
+	}
+
+	updateProgressBar(resultIndex, numIterations, 5/numberOfSteps);
+	updateProgressBar(resultIndex, numIterations, 7/numberOfSteps);
+
+	//selectWindow (nucleusColour+"_sum_of_Gaussian_AND_other_Minus_"+otherColour);
+	// look at this bit - might need changed
+	run("Maximum...", "radius="+maximumFilterRadius);
+	updateProgressBar(resultIndex, numIterations, 8/numberOfSteps);
+
+	run("Minimum...", "radius="+minimumFilterRadius);
+	updateProgressBar(resultIndex, numIterations, 9/numberOfSteps);
+
+	if (thresholdType == "yen") {
+		setAutoThreshold("Yen dark");
+	} else if (thresholdType == "triangle") {
+		run("8-bit");
+		run("Triangle Algorithm");
+	}
+	updateProgressBar(resultIndex, numIterations, 10/numberOfSteps);
+	run("Make Binary", "thresholded remaining black");
+
+	run("Invert");
+	run("Divide...", "value=255.000");
+///////////////////////////////////////////////////////////////
+	imageCalculator("Multiply create 32-bit", nucleusColour+"_sum_of_Gaussian", otherColour+"_sum_of_Gaussian");
+	rename(nucleusColour+"_"+otherColour+"_difference");
+
+
+	imageCalculator("Subtract create 32-bit", nucleusColour+"_sum_of_Gaussian", nucleusColour+"_"+otherColour+"_difference");
+
+	run("8-bit");
 	if (isUsingWatershed) {
 		run("Watershed");
 	}
+
 	updateProgressBar(resultIndex, numIterations, 11/numberOfSteps);
 
 	run("Clear Results");
