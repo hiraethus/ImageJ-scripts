@@ -1,5 +1,5 @@
 DEBUG = false;
-BATCH_MODE = false;
+BATCH_MODE = true;
 
 if (nImages > 0) {
 	if (!getBoolean("This script will remove all images from your session. Do you wish to continue?")) exit;
@@ -21,7 +21,7 @@ for (i = 0; i < fileList.length; ++i) {
 Dialog.addMessage("---");
 
 Dialog.addChoice("Nucleus stain colour:", newArray("BOTH", "DAB", "H"));
-Dialog.addSlider("Gaussian blur sigma", 0, 30, 10);
+Dialog.addSlider("Gaussian blur sigma", 0, 30, 15);
 Dialog.addCheckbox("Remove outliers:", true);
 Dialog.addChoice("Threshold type:", newArray("yen", "triangle"));
 
