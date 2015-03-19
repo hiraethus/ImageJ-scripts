@@ -1,0 +1,7 @@
+ 	Image	Nucleus Colour	Gaussian Sigma	Will remove outliers	Threshold Algorithm	Maximum Filter radius	Minimum Filter radius	Used watershed?	Nucleus count
+1	Core_1.jpg	H	15	1	yen	4	4	1	5968
+2	Core_1.jpg	DAB	15	1	yen	4	4	1	51
+3	Core_2.jpg	H	15	1	yen	4	4	1	3160
+4	Core_2.jpg	DAB	15	1	yen	4	4	1	569
+5	Core_3.jpg	H	15	1	yen	4	4	1	2273
+6	Core_3.jpg	DAB	15	1	yen	4	4	1	2844
