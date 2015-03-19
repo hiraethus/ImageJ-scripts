@@ -1,17 +1,11 @@
-# Scripts for ImageJ coursework
+# Measuring quantities of H and DAB stained cell nuclei from tissue microarray images using FIJI
 
-## TODO for countNuclei2
-1. Fix problem of removing brown from blue and vice versa
-	- solution - calculate binaries for both channels and subtract one from the other
-1. IMPORTANT Calculate ratios of brown and blue spots and print to Log
-1. ~~IMPORTANT Save images as PNG to file~~
-1. ~Iterate over each image and save all results to Results table~
-1. ~~Flatten Regions of interest onto original image~~
-1. Save flattened ROI images to file as TIFF
-1. Perhaps add parameter details to flattened images (e.g. H, DAB, gaussian sigma)
-1. Write results to table / csv file
-1. Include way to do all permutations of the above and list all the results in a results table
-1. ~~Create dialog box with checkboxes to exclude different parts of process~~
-1. Split channel DIY colour deconvolution option
-1. ~~Poss, difference of gaussian implementation~~
-1. Laplacian of Gaussian option
+## Supplementary material
+
+This repository includes:
+
+* *crop_image.ijm* - The ImageJ macro for cropping a 500 by 500 pixel square out of the centres of the images
+* *countNuclei2.ijm* - the ImageJ macro which automates the process of enumerating the number of cell nuclei
+* *TMA_data* - A directory of the tissue microarray images to perform the algorithm upon
+* *cropped* - A directory of the 500 by 500 pixel squares from the centre of each of the TMA_data images
+* *TMA_data_results* - a directory containing all of the results of the analysis including the png images with the regions of interest superimposed on each image as well as a file results_table.tsv which is a tab-separated file containing the results of the counts for all of the nuclei.
