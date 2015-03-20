@@ -8,7 +8,7 @@ if (nImages > 0) {
 resetEnvironment();
 
 //=== User Interface =======================================================================
-dir = getDirectory("Choose a Directory");
+dir = getDirectory("Choose directory containing TMA data");
 fileList = getFileList(dir);
 
 Dialog.create("Nucleus Count Options");
@@ -59,7 +59,7 @@ isUsingWatershed = Dialog.getCheckbox();
 isSaveOutputImages = Dialog.getCheckbox();
 outputDir = "/";
 if (isSaveOutputImages) {
-	outputDir = getDirectory("Choose a Directory");
+	outputDir = getDirectory("Choose directory to save results to");
 }
 
 //=== Implementation ======================================================================
